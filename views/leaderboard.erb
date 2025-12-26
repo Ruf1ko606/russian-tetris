@@ -1,0 +1,38 @@
+<!-- views/leaderboard.erb -->
+<div class="leaderboard-container">
+  <h1>Таблица Лидеров</h1>
+  
+  <% if defined?(@error) && @error %>
+    <div class="error-message" style="color: red; margin: 20px 0; padding: 10px; background: #ffe0e0; border-radius: 5px;">
+      <%= @error %>
+    </div>
+  <% end %>
+  
+  <% if @leaders && @leaders.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Игрок</th>
+          <th>Счет</th>
+          <th>Уровень</th>
+          <th>Линии</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @leaders.each do |leader| %>
+          <tr>
+            <td><%= leader['player_name'] %></td>
+            <td><%= leader['score'] %></td>
+            <td><%= leader['level'] %></td>
+            <td><%= leader['lines'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="text-align: center; margin: 30px 0;">Пока нет результатов. Сыграйте первым!</p>
+  <% end %>
+  
+  <a href="/" class="button-link">Вернуться к игре</a>
+</div>
+

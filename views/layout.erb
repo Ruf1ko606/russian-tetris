@@ -1,0 +1,19 @@
+<!-- views/layout.erb -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Русский Тетрис</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <audio id="tetris-music" loop>
+    <source src="/music/tetris-theme.mp3" type="audio/mpeg">
+  </audio>
+  <div class="main-container">
+    <%= yield %>
+  </div>
+</body>
+</html>
+

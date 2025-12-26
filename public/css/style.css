@@ -1,0 +1,90 @@
+/* public/css/style.css */
+body {
+  background-image: url('/images/kremlin.jpg');
+  background-size: cover;
+  background-position: center;
+  background-color: #333;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#game-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border: 5px solid #ccc;
+  border-radius: 10px;
+}
+
+#tetris-board {
+  border: 3px solid #fff;
+  background-color: #000;
+}
+
+#game-info {
+  width: 200px;
+  font-size: 16px;
+}
+
+#game-info div {
+  margin-bottom: 15px;
+}
+
+button, a {
+  font-family: 'Press Start 2P', cursive;
+  padding: 10px 15px;
+  background-color: #f0a000;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+#game-over-screen {
+  color: red;
+}
+/* Стили для таблицы лидеров */
+.leaderboard-container {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 40px;
+  border-radius: 10px;
+  border: 5px solid #ccc;
+  text-align: center;
+  color: #fff;
+}
+
+.leaderboard-container h1 {
+    margin-bottom: 20px;
+    color: #f0a000;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  border: 2px solid #f0a000;
+}
+
+th {
+  background-color: #f0a000;
+  color: #000;
+}
+
+.button-link {
+    margin-top: 30px;
+    display: inline-block;
+}
+

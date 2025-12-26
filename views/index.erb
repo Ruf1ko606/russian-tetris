@@ -1,0 +1,127 @@
+<!-- views/index.erb -->
+<div id="game-container">
+  <h1>Русский Тетрис</h1>
+  <canvas id="tetris-board" width="300" height="600"></canvas>
+  <div id="game-info">
+    <div>Счет: <span id="score">0</span></div>
+    <div>Уровень: <span id="level">1</span></div>
+    <div>Линии: <span id="lines">0</span></div>
+    <div id="game-over-screen" style="display: none;">
+      <h2>Игра окончена!</h2>
+      <input type="text" id="player-name" placeholder="Введите ваше имя">
+      <button id="save-score">Сохранить</button>
+    </div>
+    <button id="start-button">Начать игру</button>
+    <a href="/leaderboard">Таблица лидеров</a>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  const canvas = document.getElementById('tetris-board');
+  const context = canvas.getContext('2d');
+  const block_size = 30;
+  let gameInterval;
+  let gameActive = false;
+
+  function drawBoard(grid) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    if (!grid) return;
+    grid.forEach((row, y) => {
+      row.forEach((color, x) => {
+        if (color) {
+          context.fillStyle = color;
+          context.fillRect(x * block_size, y * block_size, block_size, block_size);
+          context.strokeStyle = 'black';
+          context.strokeRect(x * block_size, y * block_size, block_size, block_size);
+        }
+      });
+    });
+  }
+
+  function drawPiece(piece) {
+    if (!piece || !piece.blocks) return;
+    context.fillStyle = piece.color;
+    piece.blocks.forEach(block => {
+      context.fillRect(block.x * block_size, block.y * block_size, block_size, block_size);
+      context.strokeStyle = 'black';
+      context.strokeRect(block.x * block_size, block.y * block_size, block_size, block_size);
+    });
+  }
+
+  function updateUI(state) {
+    if (!state) return;
+    $('#score').text(state.score);
+    $('#level').text(state.level);
+    $('#lines').text(state.lines);
+    drawBoard(state.grid);
+    drawPiece(state.current_piece);
+
+    if (state.game_over) {
+      gameActive = false;
+      clearInterval(gameInterval);
+      $('#game-over-screen').show();
+      $('#tetris-music')[0].pause();
+    } else {
+        clearInterval(gameInterval);
+        if (state.fall_speed) {
+          gameInterval = setInterval(() => postMove({ action: 'down' }), state.fall_speed);
+        }
+    }
+  }
+
+  function postMove(data) {
+    if (!gameActive) return;
+    $.ajax({
+      url: '/move',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: updateUI,
+      error: function(xhr) {
+        console.error("Ошибка при отправке хода:", xhr.responseText);
+      }
+    });
+  }
+
+  $('#start-button').click(function() {
+    $.post('/start_game')
+      .done(function(state) {
+        gameActive = true;
+        updateUI(state);
+        $('#start-button').hide();
+        $('#game-over-screen').hide();
+        const music = $('#tetris-music')[0];
+        if (music) {
+            music.play().catch(e => console.error("Ошибка воспроизведения музыки:", e));
+        }
+      })
+      .fail(function(xhr) {
+        console.error("Не удалось начать игру:", xhr.responseText);
+        alert("Ошибка сервера. Не удалось начать игру.");
+      });
+  });
+
+  $('#save-score').click(function() {
+    const name = $('#player-name').val();
+    $.ajax({
+      url: '/game_over',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ name: name }),
+      success: function() {
+        window.location.href = '/leaderboard';
+      }
+    });
+  });
+
+  $(document).keydown(function(e) {
+    const actions = { 37: 'left', 39: 'right', 40: 'down', 38: 'rotate', 32: 'drop' };
+    if (actions[e.keyCode] && gameActive) {
+      e.preventDefault();
+      postMove({ action: actions[e.keyCode] });
+    }
+  });
+});
+</script>
+
