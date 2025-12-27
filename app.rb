@@ -1,4 +1,6 @@
-# app.rb
+# frozen_string_literal: true
+# encoding: UTF-8
+
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'json'
@@ -7,14 +9,17 @@ require_relative 'lib/tetris_game'
 
 enable :sessions
 set :session_secret, 'f9a7e3b1c8d2f0a9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3'
+set :default_encoding, 'UTF-8'
 
 def db_connection
-  PG.connect(
+  conn = PG.connect(
     host: ENV['DB_HOST'] || 'localhost', 
     user: ENV['DB_USER'] || 'postgres', 
     password: ENV['DB_PASSWORD'] || 'your_password_here', 
     dbname: ENV['DB_NAME'] || 'tetris_db'
   )
+  conn.set_client_encoding('UTF8')
+  conn
 end
 
 get '/' do
@@ -74,11 +79,11 @@ get '/leaderboard' do
     client.close
     erb :leaderboard
   rescue PG::Error => e
-    @error = "Ошибка подключения к базе данных: #{e.message}"
+    @error = "Ошибка подключения к базе данных: #{e.message.force_encoding('UTF-8')}".force_encoding('UTF-8')
     @leaders = []
     erb :leaderboard
   rescue => e
-    @error = "Ошибка при загрузке таблицы лидеров: #{e.message}"
+    @error = "Ошибка при загрузке таблицы лидеров: #{e.message.force_encoding('UTF-8')}".force_encoding('UTF-8')
     @leaders = []
     erb :leaderboard
   end
