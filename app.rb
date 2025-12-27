@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # encoding: UTF-8
 
+require 'dotenv/load'
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'json'

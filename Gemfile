@@ -12,3 +12,5 @@ gem 'pg'
 gem 'json'
 gem 'rackup'
 gem 'webrick'
+# Для загрузки переменных окружения из .env файла
+gem 'dotenv'
